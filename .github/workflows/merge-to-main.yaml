@@ -21,6 +21,12 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           TF_VAR_BUCKET_NAME: ${{ secrets.TF_VAR_BUCKET_NAME }}
+      - name: 'Run Apply on 01'
+        run: cd terraform/01-create-s3-bucket && terraform apply --auto-approve
+        env:
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_BUCKET_NAME: ${{ secrets.TF_VAR_BUCKET_NAME }}
       - name: 'Run Init on 02'
         run: cd terraform/02-configure-rubrik-archive-s3 && terraform init
         env:
@@ -45,9 +51,54 @@ jobs:
           TF_VAR_AWS_ACCESS_KEY: ${{ secrets.TF_VAR_AWS_ACCESS_KEY }}
           TF_VAR_AWS_SECRET_KEY: ${{ secrets.TF_VAR_AWS_SECRET_KEY }}
           TF_VAR_KMS_ID: ${{ secrets.TF_VAR_KMS_ID }}
+      - name: 'Run Apply on 02'
+        run: cd terraform/02-configure-rubrik-archive-s3 && terraform apply --auto-approve
+        env:
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_BUCKET_NAME: ${{ secrets.TF_VAR_BUCKET_NAME }}
+          TF_VAR_CDM_NODE_IP: ${{ secrets.TF_VAR_CDM_NODE_IP }}
+          TF_VAR_CDM_USERNAME: ${{ secrets.TF_VAR_CDM_USERNAME }}
+          TF_VAR_CDM_PASSWORD: ${{ secrets.TF_VAR_CDM_PASSWORD }}
+          TF_VAR_AWS_ACCESS_KEY: ${{ secrets.TF_VAR_AWS_ACCESS_KEY }}
+          TF_VAR_AWS_SECRET_KEY: ${{ secrets.TF_VAR_AWS_SECRET_KEY }}
+          TF_VAR_KMS_ID: ${{ secrets.TF_VAR_KMS_ID }}
       - name: Change to Ansible directory and clone Ansible Repo
         run: cd ansible && git clone https://github.com/rubrikinc/rubrik-modules-for-ansible.git
       - name: Stage Ansible files
         run: cd ansible/rubrik-modules-for-ansible/ && cp -R rubrikinc ../.. && cp ansible.cfg ../..
       - name: Check syntax
         run: ansible-playbook --verbose --syntax-check ansible/*.yaml
+      - name: Run Ansible Playbook to create new SLA Domain
+        run: ansible-playbook --verbose ansible/create_sla.yaml
+        env:
+          rubrik_cdm_node_ip: ${{ secrets.RUBRIK_CDM_NODE_IP }}
+          rubrik_cdm_username: ${{ secrets.RUBRIK_CDM_USERNAME }}
+          rubrik_cdm_password: ${{ secrets.RUBRIK_CDM_PASSWORD }}
+          RUBRIK_SLA_NAME: ${{ secrets.RUBRIK_SLA_NAME }}
+          TF_VAR_BUCKET_NAME: ${{ secrets.TF_VAR_BUCKET_NAME }}
+      - name: Run Ansible Playbook to clone VM
+        run: ansible-playbook --verbose ansible/clone_template.yaml
+        env:
+          VMWARE_USER: ${{ secrets.VMWARE_USER }}
+          VMWARE_PASSWORD: ${{ secrets.VMWARE_PASSWORD }}
+          VMWARE_VCSA: ${{ secrets.VMWARE_VCSA }}
+          VMWARE_DATACENTER: ${{ secrets.VMWARE_DATACENTER }}
+          VMWARE_CLUSTER: ${{ secrets.VMWARE_CLUSTER }}
+          VMWARE_FOLDER: ${{ secrets.VMWARE_FOLDER }}
+          VMNAME: ${{ secrets.VMNAME }}
+      - name: Run Ansible Playbook to refresh vCenter
+        run: ansible-playbook -vvv ansible/refresh_vcenter.yaml && sleep 90
+        env:
+          rubrik_cdm_node_ip: ${{ secrets.RUBRIK_CDM_NODE_IP }}
+          rubrik_cdm_username: ${{ secrets.RUBRIK_CDM_USERNAME }}
+          rubrik_cdm_password: ${{ secrets.RUBRIK_CDM_PASSWORD }}
+          VMWARE_VCSA: ${{ secrets.VMWARE_VCSA }}
+      - name: Run Ansible Playbook to protect VM
+        run: ansible-playbook -vvv ansible/protect_vm.yaml
+        env:
+          rubrik_cdm_node_ip: ${{ secrets.RUBRIK_CDM_NODE_IP }}
+          rubrik_cdm_username: ${{ secrets.RUBRIK_CDM_USERNAME }}
+          rubrik_cdm_password: ${{ secrets.RUBRIK_CDM_PASSWORD }}
+          RUBRIK_SLA_NAME: ${{ secrets.RUBRIK_SLA_NAME }}
+          VMNAME: ${{ secrets.VMNAME }}
