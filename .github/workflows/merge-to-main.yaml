@@ -70,7 +70,7 @@ jobs:
       - name: Check syntax
         run: ansible-playbook --verbose --syntax-check ansible/*.yaml
       - name: Run Ansible Playbook to create new SLA Domain
-        run: sudo ansible-playbook --verbose ansible/create_sla.yaml
+        run: ansible-playbook --verbose ansible/create_sla.yaml
         env:
           rubrik_cdm_node_ip: ${{ secrets.RUBRIK_CDM_NODE_IP }}
           rubrik_cdm_username: ${{ secrets.RUBRIK_CDM_USERNAME }}
@@ -78,7 +78,7 @@ jobs:
           RUBRIK_SLA_NAME: ${{ secrets.RUBRIK_SLA_NAME }}
           TF_VAR_BUCKET_NAME: ${{ secrets.TF_VAR_BUCKET_NAME }}
       - name: Run Ansible Playbook to clone VM
-        run: sudo ansible-playbook --verbose ansible/clone_template.yaml
+        run: ansible-playbook --verbose ansible/clone_template.yaml
         env:
           VMWARE_USER: ${{ secrets.VMWARE_USER }}
           VMWARE_PASSWORD: ${{ secrets.VMWARE_PASSWORD }}
@@ -88,14 +88,14 @@ jobs:
           VMWARE_FOLDER: ${{ secrets.VMWARE_FOLDER }}
           VMNAME: ${{ secrets.VMNAME }}
       - name: Run Ansible Playbook to refresh vCenter
-        run: sudo ansible-playbook -vvv ansible/refresh_vcenter.yaml && sleep 90
+        run: ansible-playbook -vvv ansible/refresh_vcenter.yaml && sleep 90
         env:
           rubrik_cdm_node_ip: ${{ secrets.RUBRIK_CDM_NODE_IP }}
           rubrik_cdm_username: ${{ secrets.RUBRIK_CDM_USERNAME }}
           rubrik_cdm_password: ${{ secrets.RUBRIK_CDM_PASSWORD }}
           VMWARE_VCSA: ${{ secrets.VMWARE_VCSA }}
       - name: Run Ansible Playbook to protect VM
-        run: sudo ansible-playbook -vvv ansible/protect_vm.yaml
+        run: ansible-playbook -vvv ansible/protect_vm.yaml
         env:
           rubrik_cdm_node_ip: ${{ secrets.RUBRIK_CDM_NODE_IP }}
           rubrik_cdm_username: ${{ secrets.RUBRIK_CDM_USERNAME }}
