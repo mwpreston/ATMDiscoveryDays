@@ -1,14 +1,14 @@
 ## =============================================================================
 #  Create S3 Bucket                                                            #
 ## =============================================================================
-resource "aws_s3_bucket" "rf-tf-test-bucket" {
-  bucket = "rf-tf-test-bucket"
+resource "aws_s3_bucket" "atm-test-bucket" {
+  bucket = "${var.BUCKET_NAME}"
   acl    = "private"
   versioning {
     enabled = false
   }
 
     tags = {
-    Name        = "My S3 Bucket"
+    Name        = "${var.BUCKET_NAME}"
   }
 }

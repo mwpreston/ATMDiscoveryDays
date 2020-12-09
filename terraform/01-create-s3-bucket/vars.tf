@@ -1,12 +1,4 @@
-## =============================================================================
-#  Variables - Authentication                                                  #
-## =============================================================================
-
-## =============================================================================
-#  Variables - Location                                                        #
-## =============================================================================
-variable "aws_region" {
-    type        = string
-    description = "Region to create S3 bucket"
-    default = "us-east-1"
+variable "BUCKET_NAME" {
+    type        = "string"
+    description = "Name for S3 Bucket"
 }

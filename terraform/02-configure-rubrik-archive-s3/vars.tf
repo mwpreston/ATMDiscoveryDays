@@ -1,17 +1,17 @@
 ## =============================================================================
 #  Variables - Rubrik Authentication                                           #
 ## =============================================================================
-variable "node_ip" {
+variable "CDM_NODE_IP" {
     type        = "string"
     description = "Address of Rubrik cluster node"
 }
 
-variable "username" {
+variable "CDM_USERNAME" {
     type        = "string"
     description = "User account authorized for Rubrik system"
 }
 
-variable "password" {
+variable "CDM_PASSWORD" {
     type        = "string"
     description = "Password for authorized user"
 }
@@ -19,21 +19,22 @@ variable "password" {
 ## =============================================================================
 #  Variables - AWS Authentication                                              #
 ## =============================================================================
-variable "aws_access_key" {
+variable "AWS_ACCESS_KEY" {
     type        = "string"
     description = "Access key with AWS permissions"
 }
 
-variable "aws_secret_key" {
+variable "AWS_SECRET_KEY" {
     type        = "string"
     description = "Secret key with AWS permissions"
 }
 
-## =============================================================================
-#  Variables - AWS Configuration                                               #
-## =============================================================================
-variable "aws_region" {
+variable "KMS_ID" {
     type        = "string"
-    description = "Region in which S3 bucket resides"
+    description = "KMS Encryption key"
 }
 
+variable "BUCKET_NAME" {
+    type        = "string"
+    description = "Name of Bucket"
+}

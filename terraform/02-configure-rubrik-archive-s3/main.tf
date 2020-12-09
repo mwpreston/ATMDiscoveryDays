@@ -2,11 +2,11 @@
 #  Configure S3 as Archive Location                                            #
 ## =============================================================================
 resource "rubrik_aws_s3_cloudout" "rf-tf-demo" {
-  aws_region        = "${var.aws_region}"
-  aws_bucket        = "rubriktfexample"
-  aws_access_key    = "${var.aws_access_key}"
-  aws_secret_key    = "${var.aws_secret_key}"
+  aws_region        = "us-east-1"
+  aws_bucket        = "${var.BUCKET_NAME}"
+  aws_access_key    = "${var.AWS_ACCESS_KEY}"
+  aws_secret_key    = "${var.AWS_SECRET_KEY}"
   storage_class     = "standard"
-  archive_name      = "TF-Demo"
-  kms_master_key_id = "1234abcd-12ab-34cd-56ef-1234567890ab"
+  archive_name      = "${var.BUCKET_NAME}"
+  kms_master_key_id = "${var.KMS_ID}"
 }
