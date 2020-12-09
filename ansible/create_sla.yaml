@@ -17,6 +17,3 @@
         monthly_retention: 12
         yearly_frequency: 1
         yearly_retention: 5
-        archive_name: "{{ lookup('env', 'TF_VAR_BUCKET_NAME') }}"
-        retention_on_brik_in_days: 7
-        instant_archive: True
