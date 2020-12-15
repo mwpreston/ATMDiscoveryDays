@@ -88,7 +88,7 @@ jobs:
           VMWARE_FOLDER: ${{ secrets.VMWARE_FOLDER }}
           VMNAME: ${{ secrets.VMNAME }}
       - name: Run Ansible Playbook to refresh vCenter
-        run: ansible-playbook -vvv ansible/refresh_vcenter.yaml && sleep 90
+        run: ansible-playbook -vvv ansible/refresh_vcenter.yaml && sleep 30
         env:
           rubrik_cdm_node_ip: ${{ secrets.RUBRIK_CDM_NODE_IP }}
           rubrik_cdm_username: ${{ secrets.RUBRIK_CDM_USERNAME }}
